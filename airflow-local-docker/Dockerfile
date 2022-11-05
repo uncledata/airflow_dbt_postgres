@@ -10,5 +10,3 @@ RUN pip install -r requirements.txt
 
 
 COPY ./scripts /opt/scripts
-
-EXPOSE 8080
