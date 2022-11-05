@@ -1,0 +1,14 @@
+# example profiles.yml file
+# https://docs.getdbt.com/docs/get-started/connection-profiles
+jaffle_shop:
+  target: dev
+  outputs:
+    dev:
+      type: postgres
+      host: localhost
+      user: alice
+      password: <password>
+      port: 5432
+      dbname: jaffle_shop
+      schema: dbt_alice
+      threads: 4

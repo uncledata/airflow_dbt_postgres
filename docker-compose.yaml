@@ -1,0 +1,54 @@
+version: "3.8"
+services:
+
+  postgres:
+    image: postgres:15
+    environment:
+      - POSTGRES_USER=airflow
+      - POSTGRES_PASSWORD=airflow
+      - POSTGRES_DB=airflow
+      - PGDATA=/data/postgres
+    ports:
+      - "5432:5432"
+    networks:
+      localnetwork:
+        ipv4_address: 192.168.1.3
+
+  scheduler:
+    build: ./airflow-local-docker
+    env_file:
+      - ./airflow-local-docker/airflow.env
+    depends_on:
+      - postgres
+    volumes:
+      - $HOME/.dbt_sandbox:/home/airflow/.dbt
+      - ./logs:/opt/airflow/logs
+      - ./dags:/opt/airflow/dags
+      - ./transform/data_warehouse:/opt/airflow/transform/data_warehouse
+    entrypoint: ["sh", "/opt/scripts/scheduler_entrypoint.sh"]
+    networks:
+      localnetwork:
+        ipv4_address: 192.168.1.2
+
+  webserver:
+    build: ./airflow-local-docker
+    env_file:
+      - ./airflow-local-docker/airflow.env
+    depends_on:
+      - postgres
+      - scheduler
+    ports:
+      - "8181:8080"
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - ./logs:/opt/airflow/logs
+      - ./transform/data_warehouse:/opt/airflow/transform/data_warehouse
+    entrypoint: ["sh","/opt/scripts/webserver_entrypoint.sh"]
+    networks:
+      localnetwork:
+        ipv4_address: 192.168.1.1
+networks:
+  localnetwork:
+    ipam:
+      config:
+        - subnet: 192.168.1.0/16
