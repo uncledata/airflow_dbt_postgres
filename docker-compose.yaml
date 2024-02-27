@@ -22,7 +22,6 @@ services:
       - postgres
     volumes:
       - $HOME/.dbt_sandbox:/home/airflow/.dbt
-      - ./logs:/opt/airflow/logs
       - ./dags:/opt/airflow/dags
       - ./transform/data_warehouse:/opt/airflow/transform/data_warehouse
     entrypoint: ["sh", "/opt/scripts/scheduler_entrypoint.sh"]
@@ -41,7 +40,6 @@ services:
       - "8181:8080"
     volumes:
       - ./dags:/opt/airflow/dags
-      - ./logs:/opt/airflow/logs
       - ./transform/data_warehouse:/opt/airflow/transform/data_warehouse
     entrypoint: ["sh","/opt/scripts/webserver_entrypoint.sh"]
     networks:
