@@ -1,0 +1,86 @@
+2025-04-11 14:15:39,277 - ThreadPoolExecutor-1_0 - sqlmesh.core.snapshot.evaluator - INFO - Listing data objects in schema jaffle_shop.sqlmesh__staging (evaluator.py:323)
+2025-04-11 14:15:39,277 - ThreadPoolExecutor-1_1 - sqlmesh.core.snapshot.evaluator - INFO - Listing data objects in schema jaffle_shop.sqlmesh__marts (evaluator.py:323)
+2025-04-11 14:15:39,277 - ThreadPoolExecutor-1_2 - sqlmesh.core.snapshot.evaluator - INFO - Listing data objects in schema jaffle_shop.sqlmesh__raw (evaluator.py:323)
+2025-04-11 14:15:39,303 - ThreadPoolExecutor-1_0 - sqlmesh.core.engine_adapter.base - INFO - Executing SQL: SELECT current_catalog (base.py:2113)
+2025-04-11 14:15:39,316 - ThreadPoolExecutor-1_1 - sqlmesh.core.engine_adapter.base - INFO - Executing SQL: SELECT current_catalog (base.py:2113)
+2025-04-11 14:15:39,329 - ThreadPoolExecutor-1_2 - sqlmesh.core.engine_adapter.base - INFO - Executing SQL: SELECT current_catalog (base.py:2113)
+2025-04-11 14:15:39,346 - MainThread - sqlmesh.core.snapshot.evaluator - INFO - Creating schema 'jaffle_shop.sqlmesh__raw' (evaluator.py:1070)
+2025-04-11 14:15:39,357 - MainThread - sqlmesh.core.engine_adapter.base - INFO - Executing SQL: CREATE SCHEMA IF NOT EXISTS "sqlmesh__raw" (base.py:2113)
+2025-04-11 14:15:39,359 - MainThread - sqlmesh.core.snapshot.evaluator - INFO - Creating schema 'jaffle_shop.sqlmesh__marts' (evaluator.py:1070)
+2025-04-11 14:15:39,359 - MainThread - sqlmesh.core.engine_adapter.base - INFO - Executing SQL: CREATE SCHEMA IF NOT EXISTS "sqlmesh__marts" (base.py:2113)
+2025-04-11 14:15:39,360 - MainThread - sqlmesh.core.snapshot.evaluator - INFO - Creating schema 'jaffle_shop.sqlmesh__staging' (evaluator.py:1070)
+2025-04-11 14:15:39,360 - MainThread - sqlmesh.core.engine_adapter.base - INFO - Executing SQL: CREATE SCHEMA IF NOT EXISTS "sqlmesh__staging" (base.py:2113)
+2025-04-11 14:15:39,374 - ThreadPoolExecutor-2_0 - sqlmesh.core.snapshot.evaluator - INFO - Creating table 'jaffle_shop.sqlmesh__staging.staging__stg_customers__2030330001' (evaluator.py:1422)
+2025-04-11 14:15:39,375 - ThreadPoolExecutor-2_0 - sqlmesh.core.engine_adapter.base - INFO - Executing SQL: CREATE TABLE IF NOT EXISTS "sqlmesh__staging"."staging__stg_customers__2030330001" ("customer_id" TEXT, "customer_name" TEXT) (base.py:2113)
+2025-04-11 14:15:39,383 - ThreadPoolExecutor-2_0 - sqlmesh.core.engine_adapter.base - INFO - Executing SQL: COMMENT ON TABLE "sqlmesh__staging"."staging__stg_customers__2030330001" IS 'Customer data with basic cleaning and transformation applied, one row per customer' (base.py:2113)
+2025-04-11 14:15:39,383 - ThreadPoolExecutor-2_0 - sqlmesh.core.engine_adapter.base - INFO - Executing SQL: COMMENT ON COLUMN "sqlmesh__staging"."staging__stg_customers__2030330001"."customer_id" IS 'ids' (base.py:2113)
+2025-04-11 14:15:39,384 - ThreadPoolExecutor-2_0 - sqlmesh.core.snapshot.evaluator - INFO - Dry running model 'jaffle_shop.staging.stg_customers' (evaluator.py:1444)
+2025-04-11 14:15:39,384 - ThreadPoolExecutor-2_0 - sqlmesh.core.engine_adapter.base - INFO - Executing SQL: SELECT "raw_customers"."id" AS "customer_id" FROM "jaffle_shop"."sqlmesh__raw"."raw__raw_customers__2509611031" AS "raw_customers" WHERE FALSE LIMIT 0 (base.py:2113)
+2025-04-11 14:15:39,407 - ThreadPoolExecutor-2_1 - sqlmesh.core.snapshot.evaluator - INFO - Creating table 'jaffle_shop.sqlmesh__marts.marts__customers__636861326' (evaluator.py:1422)
+2025-04-11 14:15:39,408 - ThreadPoolExecutor-2_1 - sqlmesh.core.engine_adapter.base - INFO - Executing SQL: CREATE TABLE IF NOT EXISTS "sqlmesh__marts"."marts__customers__636861326" ("customer_id" TEXT, "customer_name" TEXT, "count_lifetime_orders" INT, "is_repeat_buyer" BOOLEAN, "first_ordered_at" TIMESTAMP, "last_ordered_at" TIMESTAMP, "lifetime_spend_pretax" DOUBLE PRECISION, "lifetime_tax_paid" DOUBLE PRECISION, "lifetime_spend" DOUBLE PRECISION, "customer_type" TEXT) (base.py:2113)
+2025-04-11 14:15:39,413 - ThreadPoolExecutor-2_1 - sqlmesh.core.engine_adapter.base - INFO - Executing SQL: COMMENT ON TABLE "sqlmesh__marts"."marts__customers__636861326" IS 'Customer overview data mart, offering key details for each unique customer. One row per customer' (base.py:2113)
+2025-04-11 14:15:39,413 - ThreadPoolExecutor-2_1 - sqlmesh.core.snapshot.evaluator - INFO - Dry running model 'jaffle_shop.marts.customers' (evaluator.py:1444)
+2025-04-11 14:15:39,414 - ThreadPoolExecutor-2_1 - sqlmesh.core.engine_adapter.base - INFO - Executing SQL: WITH "customer_orders_summary" AS (SELECT "orders"."customer_id" AS "customer_id", COUNT(DISTINCT "orders"."order_id") AS "count_lifetime_orders", COUNT(DISTINCT "orders"."order_id") > 1 AS "is_repeat_buyer", MIN("orders"."ordered_at") AS "first_ordered_at", MAX("orders"."ordered_at") AS "last_ordered_at", SUM("orders"."subtotal") AS "lifetime_spend_pretax", SUM("orders"."tax_paid") AS "lifetime_tax_paid", SUM("orders"."order_total") AS "lifetime_spend" FROM "jaffle_shop"."sqlmesh__marts"."marts__orders__2407527982" AS "orders" WHERE FALSE GROUP BY "orders"."customer_id") SELECT "c"."customer_id" AS "customer_id", "c"."customer_name" AS "customer_name", COALESCE("cos"."count_lifetime_orders", 0) AS "count_lifetime_orders", COALESCE("cos"."is_repeat_buyer", FALSE) AS "is_repeat_buyer", "cos"."first_ordered_at" AS "first_ordered_at", "cos"."last_ordered_at" AS "last_ordered_at", COALESCE("cos"."lifetime_spend_pretax", 0) AS "lifetime_spend_pretax", COALESCE("cos"."lifetime_tax_paid", 0) AS "lifetime_tax_paid", COALESCE("cos"."lifetime_spend", 0) AS "lifetime_spend", CASE WHEN "cos"."is_repeat_buyer" THEN 'returning' ELSE 'new' END AS "customer_type" FROM "jaffle_shop"."sqlmesh__staging"."staging__stg_customers__2030330001" AS "c" LEFT JOIN "customer_orders_summary" AS "cos" ON "c"."customer_id" = "cos"."customer_id" WHERE FALSE LIMIT 0 (base.py:2113)
+2025-04-11 14:15:39,448 - ThreadPoolExecutor-3_0 - sqlmesh.core.snapshot.evaluator - INFO - Evaluating snapshot SnapshotId<"jaffle_shop"."staging"."stg_customers": 3716661233> (evaluator.py:599)
+2025-04-11 14:15:39,459 - ThreadPoolExecutor-3_0 - sqlmesh.core.snapshot.evaluator - INFO - Inserting batch (2016-09-01 00:00:00, 2025-04-11 00:00:00) into jaffle_shop.sqlmesh__staging.staging__stg_customers__2030330001' (evaluator.py:653)
+2025-04-11 14:15:39,460 - ThreadPoolExecutor-3_0 - sqlmesh.core.engine_adapter.base - INFO - Executing SQL: SELECT 1 FROM "information_schema"."tables" WHERE "table_name" = 'staging__stg_customers__2030330001' AND "table_schema" = 'sqlmesh__staging' (base.py:2113)
+2025-04-11 14:15:39,464 - ThreadPoolExecutor-3_0 - sqlmesh.core.engine_adapter.base - INFO - Executing SQL: DELETE FROM "sqlmesh__staging"."staging__stg_customers__2030330001" WHERE TRUE (base.py:2113)
+2025-04-11 14:15:39,465 - ThreadPoolExecutor-3_0 - sqlmesh.core.engine_adapter.base - INFO - Executing SQL: INSERT INTO "sqlmesh__staging"."staging__stg_customers__2030330001" ("customer_id", "customer_name") SELECT "customer_id", "customer_name" FROM (SELECT "raw_customers"."id" AS "customer_id" FROM "jaffle_shop"."sqlmesh__raw"."raw__raw_customers__2509611031" AS "raw_customers") AS "_subquery" (base.py:2113)
+2025-04-11 14:15:39,467 - MainThread - sqlmesh.core.scheduler - INFO - SKIPPED snapshot "jaffle_shop"."marts"."customers"
+ (scheduler.py:340)
+2025-04-11 14:15:39,467 - MainThread - sqlmesh.core.scheduler - INFO - Execution failed for node ('"jaffle_shop"."staging"."stg_customers"', ((1472688000000, 1744329600000), 0)) (scheduler.py:345)
+Traceback (most recent call last):
+  File "/Users/tomaspeluritis/.pyenv/versions/3.11.4/envs/sqlmesh/lib/python3.11/site-packages/sqlmesh/utils/concurrency.py", line 69, in _process_node
+    self.fn(node)
+  File "/Users/tomaspeluritis/.pyenv/versions/3.11.4/envs/sqlmesh/lib/python3.11/site-packages/sqlmesh/core/scheduler.py", line 474, in evaluate_node
+    audit_results, audit_errors_to_warn = self.evaluate(
+                                          ^^^^^^^^^^^^^^
+  File "/Users/tomaspeluritis/.pyenv/versions/3.11.4/envs/sqlmesh/lib/python3.11/site-packages/sqlmesh/core/scheduler.py", line 192, in evaluate
+    wap_id = self.snapshot_evaluator.evaluate(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/tomaspeluritis/.pyenv/versions/3.11.4/envs/sqlmesh/lib/python3.11/site-packages/sqlmesh/core/snapshot/evaluator.py", line 149, in evaluate
+    result = self._evaluate_snapshot(
+             ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/tomaspeluritis/.pyenv/versions/3.11.4/envs/sqlmesh/lib/python3.11/site-packages/sqlmesh/core/snapshot/evaluator.py", line 746, in _evaluate_snapshot
+    apply(query_or_df, index)
+  File "/Users/tomaspeluritis/.pyenv/versions/3.11.4/envs/sqlmesh/lib/python3.11/site-packages/sqlmesh/core/snapshot/evaluator.py", line 659, in apply
+    evaluation_strategy.insert(
+  File "/Users/tomaspeluritis/.pyenv/versions/3.11.4/envs/sqlmesh/lib/python3.11/site-packages/sqlmesh/core/snapshot/evaluator.py", line 1603, in insert
+    self._replace_query_for_model(model, table_name, query_or_df, **kwargs)
+  File "/Users/tomaspeluritis/.pyenv/versions/3.11.4/envs/sqlmesh/lib/python3.11/site-packages/sqlmesh/core/snapshot/evaluator.py", line 1283, in _replace_query_for_model
+    self.adapter.replace_query(
+  File "/Users/tomaspeluritis/.pyenv/versions/3.11.4/envs/sqlmesh/lib/python3.11/site-packages/sqlmesh/core/engine_adapter/shared.py", line 334, in internal_wrapper
+    return func(*list_args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/tomaspeluritis/.pyenv/versions/3.11.4/envs/sqlmesh/lib/python3.11/site-packages/sqlmesh/core/engine_adapter/base.py", line 396, in replace_query
+    return self._insert_overwrite_by_condition(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/tomaspeluritis/.pyenv/versions/3.11.4/envs/sqlmesh/lib/python3.11/site-packages/sqlmesh/core/engine_adapter/base.py", line 1350, in _insert_overwrite_by_condition
+    self._insert_append_query(
+  File "/Users/tomaspeluritis/.pyenv/versions/3.11.4/envs/sqlmesh/lib/python3.11/site-packages/sqlmesh/core/engine_adapter/base.py", line 1245, in _insert_append_query
+    self.execute(exp.insert(query, table_name, columns=list(columns_to_types)))
+  File "/Users/tomaspeluritis/.pyenv/versions/3.11.4/envs/sqlmesh/lib/python3.11/site-packages/sqlmesh/core/engine_adapter/base.py", line 2110, in execute
+    self._execute(sql, **kwargs)
+  File "/Users/tomaspeluritis/.pyenv/versions/3.11.4/envs/sqlmesh/lib/python3.11/site-packages/sqlmesh/core/engine_adapter/base.py", line 2116, in _execute
+    self.cursor.execute(sql, **kwargs)
+psycopg2.errors.UndefinedColumn: column "customer_name" does not exist
+LINE 1: ...tomer_id", "customer_name") SELECT "customer_id", "customer_...
+                                                             ^
+HINT:  There is a column named "customer_name" in table "staging__stg_customers__2030330001", but it cannot be referenced from this part of the query.
+
+
+The above exception was the direct cause of the following exception:
+
+sqlmesh.utils.concurrency.NodeExecutionFailedError: Execution failed for node ('"jaffle_shop"."staging"."stg_customers"', ((1472688000000, 1744329600000), 0))
+2025-04-11 14:15:39,472 - MainThread - sqlmesh.core.context - INFO - Plan application failed. (context.py:1491)
+Traceback (most recent call last):
+  File "/Users/tomaspeluritis/.pyenv/versions/3.11.4/envs/sqlmesh/lib/python3.11/site-packages/sqlmesh/core/context.py", line 1483, in apply
+    self._apply(plan, circuit_breaker)
+  File "/Users/tomaspeluritis/.pyenv/versions/3.11.4/envs/sqlmesh/lib/python3.11/site-packages/sqlmesh/core/context.py", line 2077, in _apply
+    self._scheduler.create_plan_evaluator(self).evaluate(
+  File "/Users/tomaspeluritis/.pyenv/versions/3.11.4/envs/sqlmesh/lib/python3.11/site-packages/sqlmesh/core/plan/evaluator.py", line 139, in evaluate
+    self._backfill(
+  File "/Users/tomaspeluritis/.pyenv/versions/3.11.4/envs/sqlmesh/lib/python3.11/site-packages/sqlmesh/core/plan/evaluator.py", line 237, in _backfill
+    raise PlanError("Plan application failed.")
+sqlmesh.utils.errors.PlanError: Plan application failed.
+2025-04-11 14:15:39,473 - MainThread - root - INFO - Shutting down the event dispatcher (dispatcher.py:159)

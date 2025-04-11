@@ -1,0 +1,31 @@
+gateways:
+  postgres:
+    connection:
+      # For more information on configuring the connection to your execution engine, visit:
+      # https://sqlmesh.readthedocs.io/en/stable/reference/configuration/#connections
+      # https://sqlmesh.readthedocs.io/en/stable/integrations/engines/postgres/#connection-options
+      type: postgres
+      host: localhost
+      user: airflow
+      password: airflow
+      port: 5432
+      database: jaffle_shop
+      concurrent_tasks: 4
+      register_comments: True
+    state_connection:
+      type: postgres
+      host: localhost
+      user: airflow
+      password: airflow
+      port: 5432
+      database: sqlmesh
+      concurrent_tasks: 4
+      register_comments: True
+
+
+default_gateway: postgres
+
+model_defaults:
+  kind: FULL
+  dialect: postgres
+  start: 2016-09-01

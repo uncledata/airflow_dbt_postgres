@@ -1,0 +1,2 @@
+2025-04-11 14:16:30,276 - MainThread - sqlmesh.core.state_sync.db.migrator - INFO - Starting migration rollback. (migrator.py:135)
+2025-04-11 14:16:30,289 - MainThread - root - INFO - Shutting down the event dispatcher (dispatcher.py:159)

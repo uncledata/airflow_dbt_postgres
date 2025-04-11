@@ -1,0 +1,37 @@
+project:
+  name: jaffle_shop
+  default_catalog: sqlmesh
+  default_schema: jaffle
+  paths:
+    macros: macros/utils.py
+    tests: tests
+
+# Configuring environments
+environments:
+  dev:
+    default: true
+    schemas:
+      default: jaffle_dev
+  prod:
+    schemas:
+      default: jaffle_prod
+
+seeds:
+  path: seeds  # Directory where seeds are stored
+  schema: seeds  # Schema where seeds will be loaded
+  file_format: csv  # Default format for seed files
+  options:
+    header: true  # CSV has header
+    delimiter: ','  # CSV delimiter
+  
+# Time spine configuration
+time_spine:
+  sql: |
+    WITH days AS (
+      SELECT date_trunc('day', generate_series(
+        '2000-01-01'::timestamp,
+        '2030-01-01'::timestamp,
+        interval '1 day'
+      )) as date_day
+    )
+    SELECT date_day::date as date_day FROM days
