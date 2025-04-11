@@ -1,4 +1,4 @@
-FROM apache/airflow:2.4.2-python3.9
+FROM apache/airflow:2.10.3
 USER root
 WORKDIR /opt
 RUN apt-get update && apt-get install git gcc libpq-dev build-essential -y

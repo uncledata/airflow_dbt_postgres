@@ -6,8 +6,8 @@ jaffle_shop:
     dev:
       type: postgres
       host: localhost
-      user: alice
-      password: <password>
+      user: airflow
+      password: airflow
       port: 5432
       dbname: jaffle_shop
       schema: dbt_alice
